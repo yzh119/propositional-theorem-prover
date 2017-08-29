@@ -47,15 +47,15 @@ class Formula(object):
 
     def __str__(self):
         if self._conn == Connective.AND:
-            return '(' + self._op_l + ' and ' + self._op_r + ')'
+            return '(' + str(self._op_l) + ' and ' + str(self._op_r) + ')'
         if self._conn == Connective.OR:
-            return '(' + self._op_l + ' or ' + self._op_r + ')'
+            return '(' + str(self._op_l) + ' or ' + str(self._op_r) + ')'
         if self._conn == Connective.IMP:
-            return '(' + self._op_r + ' imp ' + self._op_r + ')'
+            return '(' + str(self._op_r) + ' imp ' + str(self._op_r) + ')'
         if self._conn == Connective.IFF:
-            return '(' + self._op_l + ' iff ' + self._op_r + ')'
+            return '(' + str(self._op_l) + ' iff ' + str(self._op_r) + ')'
         if self._conn == Connective.NEG:
-            return '(' + 'neg ' + self._op_r + ')'
+            return '(' + 'neg ' + str(self._op_r) + ')'
 
 
 class String(object):
@@ -68,7 +68,7 @@ class String(object):
         return self._forms
 
     def __str__(self):
-        return '[' + ', '.join(self._forms) + ']'
+        return '[' + ', '.join([str(form) for form in self._forms]) + ']'
 
 
 class Sequent(object):
@@ -86,4 +86,4 @@ class Sequent(object):
         return self._post
 
     def __str__(self):
-        return self._pre + ' seq ' + self._post
+        return str(self._pre) + ' seq ' + str(self._post)
