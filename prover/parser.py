@@ -22,7 +22,8 @@ def parse_form(input_str):
             else:
                 space += 1
 
-    assert k > -1, "Invalid Formula"
+    if k == -1:
+        return Atom(input_str)
 
     conn_str = input_str[k:k+3]
     conn = None
@@ -55,11 +56,11 @@ def parse_string(input_str, level):
         chs = input_str.split('seq')
         assert len(chs) == 2, "Unexpected input"
         str_l = chs[0].strip().strip('[').strip(']')
-        str_r = chs[0].strip().strip('[').strip(']')
+        str_r = chs[1].strip().strip('[').strip(']')
         ret = Sequent(parse_string(str_l, 'STR'), parse_string(str_r, 'STR'))
     elif level == 'STR':
         if len(input_str) == 0:
-            return Empty
+            return String([])
         chs = input_str.split(',')
         ret = String([parse_string(s, 'FOR') for s in chs])
     elif level == 'FOR':

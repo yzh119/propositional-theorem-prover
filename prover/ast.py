@@ -24,6 +24,9 @@ class Atom(object):
     def __str__(self):
         return self.name
 
+    def __hash__(self):
+        return hash(self.name)
+
 
 Empty = Atom()
 
