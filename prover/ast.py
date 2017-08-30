@@ -57,7 +57,7 @@ class Formula(object):
         if self._conn == Connective.OR:
             return '(' + str(self._op_l) + ' or ' + str(self._op_r) + ')'
         if self._conn == Connective.IMP:
-            return '(' + str(self._op_r) + ' imp ' + str(self._op_r) + ')'
+            return '(' + str(self._op_l) + ' imp ' + str(self._op_r) + ')'
         if self._conn == Connective.IFF:
             return '(' + str(self._op_l) + ' iff ' + str(self._op_r) + ')'
         if self._conn == Connective.NEG:

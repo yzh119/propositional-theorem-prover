@@ -17,6 +17,7 @@ def tautology(seq):
 
     if set(atom_l_arr) & set(atom_r_arr):
         return True
+
     return False
 
 
@@ -33,9 +34,10 @@ class Tree(object):
         assert node1
         if node2:
             self.childs.append((node1, node2))
+            self.satis.append([0, 0])
         else:
             self.childs.append(node1)
-        self.satis.append(0)
+            self.satis.append(0)
         self.rule.append(rule)
 
     def trace(self):
@@ -63,12 +65,16 @@ class Tree(object):
             flag = False
             for i, item in enumerate(self.parent.childs):
                 if isinstance(item, tuple):
-                    if item[0] == self or item[1] == self:
-                        self.parent.satis[i] += 1
-                        if self.parent.satis[i] == 2:
-                            self.parent.chd_idx = i
-                            flag = True
-                            break
+                    if item[0] == self:
+                        self.parent.satis[i][0] = 1
+                    elif item[1] == self:
+                        self.parent.satis[i][1] = 1
+
+                    if sum(self.parent.satis[i]) == 2:
+                        self.parent.chd_idx = i
+                        flag = True
+                        break
+
                 else:
                     if item == self:
                         self.parent.satis[i] += 1

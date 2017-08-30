@@ -12,4 +12,7 @@ tree = parse_string(sequent, "SEQ")
 
 provable = bfs_solver(tree)
 
+if provable:
+    print('QED')
+
 print(provable)

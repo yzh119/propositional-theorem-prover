@@ -42,6 +42,7 @@ def parse_form(input_str):
 
     str_l = input_str[0:k].strip().strip('(').strip(')')
     str_r = input_str[k+3:].strip().strip('(').strip(')')
+
     detect_l = ' ' in str_l
     detect_r = ' ' in str_r
     return Formula(conn,
