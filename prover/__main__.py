@@ -9,6 +9,7 @@ assert len(args) == 2, "Invalid format"
 sequent = args[1]
 
 tree = parse_string(sequent, "SEQ")
+print(tree)
 
 provable = bfs_solver(tree)
 

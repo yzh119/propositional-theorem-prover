@@ -1,8 +1,27 @@
 from .ast import *
 
+conn_dict = {'seq', 'and', 'or', 'imp', 'iff', 'neg'}
+
+
+def count_conn(input_str):
+    cnt = 0
+    input_str = input_str.replace(')', ' ')
+    input_str = input_str.replace('(', ' ')
+    input_str = input_str.replace(',', ' ')
+    seq = input_str.split()
+
+    for token in seq:
+        if token in conn_dict:
+            cnt += 1
+    return cnt
+
 
 def parse_form(input_str):
-    input_str = input_str.strip().strip('(').strip(')')
+    input_str = input_str.strip()
+    if count_conn(input_str) <= 1:
+        input_str = input_str.strip('(')
+        input_str = input_str.strip(')')
+
     cnt = 0
     space = 0
     k = -1
@@ -25,7 +44,7 @@ def parse_form(input_str):
     if k == -1:
         return Atom(input_str)
 
-    conn_str = input_str[k:k+3]
+    conn_str = input_str[k:k + 3]
     conn = None
     if conn_str == 'neg':
         conn = Connective.NEG
@@ -40,8 +59,13 @@ def parse_form(input_str):
 
     assert conn, "Invalid Formula"
 
-    str_l = input_str[0:k].strip().strip('(').strip(')')
-    str_r = input_str[k+3:].strip().strip('(').strip(')')
+    str_l = input_str[0:k].strip()
+    str_r = input_str[k + 3:].strip()
+
+    if count_conn(str_l) <= 1:
+        str_l = str_l.strip('(').strip(')')
+    if count_conn(str_r) <= 1:
+        str_r = str_r.strip('(').strip(')')
 
     detect_l = ' ' in str_l
     detect_r = ' ' in str_r
