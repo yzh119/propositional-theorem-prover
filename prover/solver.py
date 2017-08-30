@@ -92,6 +92,7 @@ def bfs_solver(seq):
         t = queue[head][1]
         if tautology(now):
             if t.update():
+                ret = True
                 break
         else:
             # Rule P2a
@@ -106,7 +107,7 @@ def bfs_solver(seq):
                     if form.conn == Connective.NEG:
                         new_term = form.get_op(1)
                 new_pre_list.append(new_term)
-                new_t = Tree(len(queue))
+                new_t = Tree(len(queue), parent=t)
                 queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
                 t.add_child('P2a', node1=new_t)
 
@@ -120,11 +121,26 @@ def bfs_solver(seq):
                     if form.conn == Connective.NEG:
                         new_term = form.get_op(1)
                 new_post_list.append(new_term)
-                new_t = Tree(len(queue))
+                new_t = Tree(len(queue), parent=t)
                 queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
                 t.add_child('P2b', node1=new_t)
 
             # Rule P3a
+            for form in post_list:
+                if isinstance(form, Formula):
+                    if form.conn == Connective.AND:
+                        new_post_list_1 = post_list[:]
+                        new_post_list_2 = post_list[:]
+                        new_post_list_1.remove(form)
+                        new_post_list_2.remove(form)
+                        new_post_list_1.append(form.get_op(0))
+                        new_post_list_2.append(form.get_op(1))
+                        new_t_1 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(now.pre, String(new_post_list_1)), new_t_1))
+                        new_t_2 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(now.pre, String(new_post_list_2)), new_t_2))
+                        t.add_child('P3a', node1=new_t_1, node2=new_t_2)
+
             # Rule P3b
             for form in pre_list:
                 if isinstance(form, Formula):
@@ -133,7 +149,7 @@ def bfs_solver(seq):
                         new_pre_list.remove(form)
                         new_pre_list.append(form.get_op(0))
                         new_pre_list.append(form.get_op(1))
-                        new_t = Tree(len(queue))
+                        new_t = Tree(len(queue), parent=t)
                         queue.append((Sequent(String(new_pre_list), now.post), new_t))
                         t.add_child('P3b', node1=new_t)
 
@@ -145,11 +161,13 @@ def bfs_solver(seq):
                         new_post_list.remove(form)
                         new_post_list.append(form.get_op(0))
                         new_post_list.append(form.get_op(1))
-                        new_t = Tree(len(queue))
+                        new_t = Tree(len(queue), parent=t)
                         queue.append((Sequent(now.pre, String(new_post_list)), new_t))
                         t.add_child('P4a', node1=new_t)
 
             # Rule P4b
+            
+
             # Rule P5a
             for form in post_list:
                 if isinstance(form, Formula):
@@ -159,7 +177,7 @@ def bfs_solver(seq):
                         new_post_list.remove(form)
                         new_pre_list.append(form.get_op(0))
                         new_post_list.append(form.get_op(1))
-                        new_t = Tree(len(queue))
+                        new_t = Tree(len(queue), parent=t)
                         queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
                         t.add_child('P5a', node1=new_t)
 
