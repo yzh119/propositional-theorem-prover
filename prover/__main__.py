@@ -10,9 +10,6 @@ sequent = args[1]
 
 tree = parse_string(sequent, "SEQ")
 
-provable, history = bfs_solver(tree)
+provable = bfs_solver(tree)
 
 print(provable)
-if provable:
-    for approach, sequent in reversed(history):
-        print(approach, sequent)
