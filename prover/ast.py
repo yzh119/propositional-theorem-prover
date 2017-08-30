@@ -24,7 +24,6 @@ class Atom(object):
         else:
             return False
 
-
     def __str__(self):
         return self.name
 

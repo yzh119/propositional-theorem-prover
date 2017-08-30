@@ -166,7 +166,21 @@ def bfs_solver(seq):
                         t.add_child('P4a', node1=new_t)
 
             # Rule P4b
-            
+            for form in pre_list:
+                if isinstance(form, Formula):
+                    if form.conn == Connective.OR:
+                        new_pre_list_1 = pre_list[:]
+                        new_pre_list_2 = pre_list[:]
+                        new_pre_list_1.remove(form)
+                        new_pre_list_2.remove(form)
+                        new_pre_list_1.append(form.get_op(0))
+                        new_pre_list_2.append(form.get_op(1))
+                        new_t_1 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_1), now.post), new_t_1))
+                        new_t_2 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_2), now.post), new_t_2))
+                        t.add_child('P4b', node1=new_t_1, node2=new_t_2)
+
 
             # Rule P5a
             for form in post_list:
@@ -182,8 +196,64 @@ def bfs_solver(seq):
                         t.add_child('P5a', node1=new_t)
 
             # Rule P5b
+            for form in pre_list:
+                if isinstance(form, Formula):
+                    if form.conn == Connective.IMP:
+                        new_pre_list_1 = pre_list[:]
+                        new_pre_list_2 = pre_list[:]
+                        new_post_list = post_list[:]
+                        new_pre_list_1.remove(form)
+                        new_pre_list_2.remove(form)
+
+                        new_pre_list_1.append(form.get_op(1))
+                        new_post_list.append(form.get_op(0))
+                        new_t_1 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_1), now.post), new_t_1))
+                        new_t_2 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_2), String(new_post_list)), new_t_2))
+                        t.add_child('P5b', node1=new_t_1, node2=new_t_2)
+
             # Rule P6a
+            for form in post_list:
+                if isinstance(form, Formula):
+                    if form.conn == Connective.IFF:
+                        new_pre_list_1 = pre_list[:]
+                        new_pre_list_2 = pre_list[:]
+                        new_post_list_1 = post_list[:]
+                        new_post_list_2 = post_list[:]
+                        new_post_list_1.remove(form)
+                        new_post_list_2.remove(form)
+
+                        new_pre_list_1.append(form.get_op(0))
+                        new_post_list_1.append(form.get_op(1))
+                        new_pre_list_2.append(form.get_op(1))
+                        new_post_list_2.append(form.get_op(0))
+                        new_t_1 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_1), String(new_post_list_1)), new_t_1))
+                        new_t_2 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_2), String(new_post_list_2)), new_t_2))
+                        t.add_child('P6a', node1=new_t_1, node2=new_t_2)
+
             # Rule P6b
+            for form in pre_list:
+                if isinstance(form, Formula):
+                    if form.conn == Connective.IFF:
+                        new_pre_list_1 = pre_list[:]
+                        new_pre_list_2 = pre_list[:]
+                        new_post_list_2 = post_list[:]
+                        new_pre_list_1.remove(form)
+                        new_pre_list_2.remove(form)
+
+                        new_pre_list_1.append(form.get_op(0))
+                        new_pre_list_1.append(form.get_op(1))
+                        new_post_list_2.append(form.get_op(0))
+                        new_post_list_2.append(form.get_op(1))
+
+                        new_t_1 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_1), now.post), new_t_1))
+                        new_t_2 = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list_2), String(new_post_list_2)), new_t_2))
+                        t.add_child('P6b', node1=new_t_1, node2=new_t_2)
 
         head += 1
 
