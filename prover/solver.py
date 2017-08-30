@@ -105,31 +105,27 @@ def bfs_solver(seq):
             pre_list = now.pre.forms
             post_list = now.post.forms
             for form in post_list:
-                new_pre_list = pre_list[:]
-                new_post_list = post_list[:]
-                new_post_list.remove(form)
-                new_term = Formula(Connective.NEG, op_l=Atom(''), op_r=form)
                 if isinstance(form, Formula):
                     if form.conn == Connective.NEG:
-                        new_term = form.get_op(1)
-                new_pre_list.append(new_term)
-                new_t = Tree(len(queue), parent=t)
-                queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
-                t.add_child('P2a', node1=new_t)
+                        new_pre_list = pre_list[:]
+                        new_post_list = post_list[:]
+                        new_post_list.remove(form)
+                        new_pre_list.append(form.get_op(1))
+                        new_t = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
+                        t.add_child('P2a', node1=new_t)
 
             # Rule P2b
             for form in pre_list:
-                new_pre_list = pre_list[:]
-                new_pre_list.remove(form)
-                new_post_list = post_list[:]
-                new_term = Formula(Connective.NEG, op_l=Atom(''), op_r=form)
                 if isinstance(form, Formula):
                     if form.conn == Connective.NEG:
-                        new_term = form.get_op(1)
-                new_post_list.append(new_term)
-                new_t = Tree(len(queue), parent=t)
-                queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
-                t.add_child('P2b', node1=new_t)
+                        new_pre_list = pre_list[:]
+                        new_pre_list.remove(form)
+                        new_post_list = post_list[:]
+                        new_post_list.append(form.get_op(1))
+                        new_t = Tree(len(queue), parent=t)
+                        queue.append((Sequent(String(new_pre_list), String(new_post_list)), new_t))
+                        t.add_child('P2b', node1=new_t)
 
             # Rule P3a
             for form in post_list:
