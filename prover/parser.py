@@ -3,6 +3,25 @@ from .ast import *
 conn_dict = {'seq', 'and', 'or', 'imp', 'iff', 'neg'}
 
 
+def remove_bracket(input_str):
+    if input_str:
+        cnt = 0
+        flag = input_str[0] == '('
+        for i, char in enumerate(input_str):
+            if char == '(':
+                cnt += 1
+            elif char == ')':
+                cnt -= 1
+            if cnt == 0 and i != len(input_str) - 1:
+                flag = False
+
+        assert cnt == 0, "Unmatched bracket"
+        if flag:
+            return input_str[1:-1]
+    return input_str
+
+
+"""
 def count_conn(input_str):
     cnt = 0
     input_str = input_str.replace(')', ' ')
@@ -14,13 +33,12 @@ def count_conn(input_str):
         if token in conn_dict:
             cnt += 1
     return cnt
+"""
 
 
 def parse_form(input_str):
     input_str = input_str.strip()
-    if count_conn(input_str) <= 1:
-        input_str = input_str.strip('(')
-        input_str = input_str.strip(')')
+    input_str = remove_bracket(input_str)
 
     cnt = 0
     space = 0
@@ -62,10 +80,8 @@ def parse_form(input_str):
     str_l = input_str[0:k].strip()
     str_r = input_str[k + 3:].strip()
 
-    if count_conn(str_l) <= 1:
-        str_l = str_l.strip('(').strip(')')
-    if count_conn(str_r) <= 1:
-        str_r = str_r.strip('(').strip(')')
+    str_l = remove_bracket(str_l)
+    str_r = remove_bracket(str_r)
 
     detect_l = ' ' in str_l
     detect_r = ' ' in str_r
