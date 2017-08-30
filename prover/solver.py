@@ -3,8 +3,6 @@ from .ast import *
 
 def tautology(seq):
     assert isinstance(seq, Sequent)
-    if not seq.post.forms:
-        return True
     atom_l_arr = []
     atom_r_arr = []
     for form in seq.pre.forms:
@@ -28,38 +26,78 @@ class Tree(object):
 def bfs_solver(seq):
     history = []
     ret = False
-    queue = [(seq, None, -1)]  # tuple: (seq, approach, prev, )
+    queue = [(seq, None, -1)]  # tuple: (seq, approach, prev)
     head = 0
-    tail = 1
     hit = -1
-    while head < tail:
+    while head < len(queue):
         now = queue[head][0]
         if tautology(now):
             hit = head
             break
-        head += 1
-        '''
+
         # Rule P2a
-        queue.append((new_seq, 'Rule P2a', now))
+        pre_list = now.pre.forms
+        post_list = now.post.forms
+        for form in post_list:
+            new_pre_list = pre_list[:]
+            new_post_list = post_list[:]
+            new_post_list.remove(form)
+            new_term = Formula(Connective.NEG, op_l=Atom(''), op_r=form)
+            if isinstance(form, Formula):
+                if form.conn == Connective.NEG:
+                    new_term = form.get_op(1)
+            new_pre_list.append(new_term)
+            queue.append((Sequent(String(new_pre_list), String(new_post_list)), 'P2a', head))
+
         # Rule P2b
-        queue.append((new_seq, 'Rule P2b', now))
+        for form in pre_list:
+            new_pre_list = pre_list[:]
+            new_pre_list.remove(form)
+            new_post_list = post_list[:]
+            new_term = Formula(Connective.NEG, op_l=Atom(''), op_r=form)
+            if isinstance(form, Formula):
+                if form.conn == Connective.NEG:
+                    new_term = form.get_op(1)
+            new_post_list.append(new_term)
+            queue.append((Sequent(String(new_pre_list), String(new_post_list)), 'P2b', head))
+
         # Rule P3a
-        queue.append((new_seq, 'Rule P3a', now))
         # Rule P3b
-        queue.append((new_seq, 'Rule P3b', now))
+        for form in pre_list:
+            if isinstance(form, Formula):
+                if form.conn == Connective.AND:
+                    new_pre_list = pre_list[:]
+                    new_pre_list.remove(form)
+                    new_pre_list.append(form.get_op(0))
+                    new_pre_list.append(form.get_op(1))
+                    queue.append((Sequent(String(new_pre_list), now.post), 'P3b', head))
+
         # Rule P4a
-        queue.append((new_seq, 'Rule P4a', now))
+        for form in post_list:
+            if isinstance(form, Formula):
+                if form.conn == Connective.OR:
+                    new_post_list = post_list[:]
+                    new_post_list.remove(form)
+                    new_post_list.append(form.get_op(0))
+                    new_post_list.append(form.get_op(1))
+                    queue.append((Sequent(now.pre, String(new_post_list)), 'P4a', head))
+
         # Rule P4b
-        queue.append((new_seq, 'Rule P4b', now))
         # Rule P5a
-        queue.append((new_seq, 'Rule P5a', now))
+        for form in post_list:
+            if isinstance(form, Formula):
+                if form.conn == Connective.IMP:
+                    new_pre_list = pre_list[:]
+                    new_post_list = post_list[:]
+                    new_post_list.remove(form)
+                    new_pre_list.append(form.get_op(0))
+                    new_post_list.append(form.get_op(1))
+                    queue.append((Sequent(String(new_pre_list), String(new_post_list)), 'P5a', head))
+
         # Rule P5b
-        queue.append((new_seq, 'Rule P5b', now))
         # Rule P6a
-        queue.append((new_seq, 'Rule P6a', now))
         # Rule P6b
-        queue.append((new_seq, 'Rule P6b', now))
-        '''
+        head += 1
 
     if hit != -1:
         ret = True

@@ -19,7 +19,11 @@ class Atom(object):
         return self._name
 
     def __eq__(self, other):
-        return self.name == other.name
+        if isinstance(other, Atom):
+            return self.name == other.name
+        else:
+            return False
+
 
     def __str__(self):
         return self.name

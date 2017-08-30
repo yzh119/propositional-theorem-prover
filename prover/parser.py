@@ -2,7 +2,7 @@ from .ast import *
 
 
 def parse_form(input_str):
-    input_str = input_str.strip()
+    input_str = input_str.strip().strip('(').strip(')')
     cnt = 0
     space = 0
     k = -1
